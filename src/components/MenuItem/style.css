@@ -1,0 +1,62 @@
+.menu-item{
+
+    padding: 10px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.menu-icon {
+    width: 70px;
+    height: 70px;
+
+
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.unreaded-changes {
+    padding-right: 10px; 
+
+    width: 0; 
+    height: 0; 
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+
+    border-left: 10px solid white;
+}
+
+.selected {
+    padding-right: 10px; 
+
+    width: 0; 
+    height: 0; 
+    border-top: 20px solid transparent;
+    border-bottom: 20px solid transparent;
+
+    border-left: 10px solid white;
+}
+
+
+.plusicon {
+    background-color: white;
+    width: 35px;
+    height: 35px;
+}
+
+.menu-icon img {
+    width: 100%;
+    height: 100%;
+
+    border-radius: 50%;
+    transition: 0.2s;
+    cursor: pointer;
+}
+
+.menu-icon img:hover{
+    border-radius: 35%;
+    transition: 0.2s;
+}

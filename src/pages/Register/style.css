@@ -1,0 +1,42 @@
+#register-container{
+    width: 100vw;
+    height: 100vh;
+    background-color: #D9D9D9;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#register-form {
+    background-color: #E3E3E3;
+
+    width: 600px;
+    height: 600px;
+
+
+    display: flex;
+    flex-direction: column;
+
+    justify-content: center;
+    align-items: center;
+}
+
+.warning{
+    color: red;
+}
+
+.hide {
+    display: none;
+}
+
+#register-form input {
+    width: 300px;
+    height: 30px;
+    border: 2px solid;
+    padding: 20px 0;
+}
+
+.invalid {
+    border: 2px solid red;
+}

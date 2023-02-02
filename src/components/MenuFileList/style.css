@@ -1,0 +1,20 @@
+img {
+    width: 20px;
+    padding-right: 5px;
+}
+
+li{
+    color: var(--primary-color);
+    font-weight: bold;
+
+    overflow-x: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+li:hover {
+    background-color: var(--bg-hover-color);
+}
