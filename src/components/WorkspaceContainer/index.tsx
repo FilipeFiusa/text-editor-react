@@ -5,6 +5,7 @@ import Folder from "../../model/Folder";
 import Message from "../../model/Message";
 import Workspace from "../../model/Workpace";
 import ChatComponent from "../ChatComponent";
+import ConnectedUserComponent from "../ConnectedUserComponent";
 import MenuFileList from '../MenuFileList';
 import './style.css';
 
@@ -20,9 +21,21 @@ interface WorkspaceConnection {
     workspace: Workspace
 }
 
+interface ConnectedUser {
+    connected: boolean;
+    user: WorkspaceUser;
+}
+
+interface WorkspaceUser {
+    username: string;
+    userId: number;
+}
+
 function WorkspaceContainer ( {workspaceConnection, currentFolder}: Props ){
     const [workspaceFolder, setWokspaceFolder] = useState(new Folder('', '', [], []));
     const [isConnected, setIsConnected] = useState(socket.connected);
+
+    const [connectedUsers, setConnectedUsers] = useState<ConnectedUser[]>([]);
 
     const [ currentFileName, setCurrentFileName ] = useState("");
 
@@ -63,6 +76,17 @@ function WorkspaceContainer ( {workspaceConnection, currentFolder}: Props ){
         if(textarea)
             textarea.value = "";
 
+        
+        // workspaceConnection?.socket.emit("auth", auth?.userId, () => {
+        //     console.log("authing")
+            
+        workspaceConnection?.socket.emit("get-users", (currentConnectedUsers: ConnectedUser[]) => {
+            console.log(currentConnectedUsers);
+
+            setConnectedUsers(currentConnectedUsers);
+            
+        })
+
         workspaceConnection?.socket.on("room-changed", content => {
             const textarea = (document.getElementById("page-content") as HTMLInputElement);
             textarea.value = content;
@@ -80,10 +104,21 @@ function WorkspaceContainer ( {workspaceConnection, currentFolder}: Props ){
 
         return () => {
             workspaceConnection?.socket.off("room-changed")
+            workspaceConnection?.socket.off("get-users")
             workspaceConnection?.socket.off("receive-text-changed")
            // workspaceConnection?.socket.off("new-general-message")
         };
     }, [workspaceConnection]);
+
+    useEffect(() => {
+        workspaceConnection?.socket.on("users-changed", (currentConnectedUsers: ConnectedUser[]) => {
+            console.log("users changed")
+            setConnectedUsers(currentConnectedUsers);
+        })
+        return () => {
+            workspaceConnection?.socket.off("users-changed")
+        };
+    }, [workspaceConnection])
 
     useEffect(() => {
         workspaceConnection?.socket.on('new-general-message', (newMessage: Message) => {
@@ -144,7 +179,9 @@ function WorkspaceContainer ( {workspaceConnection, currentFolder}: Props ){
                 </div>
 
                 <div id="connected-users">
-                    asdasdsad
+                    {connectedUsers.map(user => {
+                        return <ConnectedUserComponent key={user.user.userId} connected={user.connected} user={user.user}  />
+                    })}
                 </div>
             </div>
         </div>

@@ -32,6 +32,7 @@ const PersistLogin = () => {
                     setIsLoading(false);
                 }
             }catch(err){
+                console.log(err);
                 console.log("deu ruim");
             }finally{
                 setIsLoading(false);

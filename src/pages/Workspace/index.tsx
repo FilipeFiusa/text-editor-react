@@ -38,7 +38,10 @@ function WorkspacePage(){
     }
 
     const workspaceOnClick = (workspace: Workspace | undefined) => {
+        console.log("clicqued")
         if(workspace != undefined){
+            console.log("not undefined")
+            console.log(workspace.name)
             for(let workspaceConnection of workspacesConnections){
                 if(workspaceConnection.workspace.inviteCode === workspace.inviteCode){
                     setCurrentWorkspace(workspaceConnection);
@@ -64,16 +67,18 @@ function WorkspacePage(){
             workspaceSocketInstance.on("connect", () => {
                 console.log(workspaceSocketInstance.id + " connected on " + workspace.name)
 
-                workspaceSocketInstance.emit('get-folders', (folders: any) => {
-                    console.log(workspace.inviteCode + ": ");
-                    workspace.workspaceFolder = folders;
-                    console.log(workspace.workspaceFolder);
-
-                    tempWorkspace.push(new SocketConnection(workspaceSocketInstance, workspace));
-
-                    if(tempWorkspace.length === userWorkspaces.length){
-                        setWorkspacesConnections([...tempWorkspace])
-                    }
+                workspaceSocketInstance.emit("auth", auth?.userId, () => {
+                    workspaceSocketInstance.emit('initialize', (folders: any) => {
+                        console.log(workspace.inviteCode + ": ");
+                        workspace.workspaceFolder = folders;
+                        console.log(workspace.workspaceFolder);
+    
+                        tempWorkspace.push(new SocketConnection(workspaceSocketInstance, workspace));
+    
+                        if(tempWorkspace.length === userWorkspaces.length){
+                            setWorkspacesConnections([...tempWorkspace])
+                        }
+                    })
                 })
             })
         })
@@ -133,10 +138,30 @@ function WorkspacePage(){
             console.log(userWorkspaces)
             console.log(newWorkspace)
 
-            setUserWorkspaces([
+            const workspaceSocketInstance = io("http://localhost:3333/" + newWorkspace.inviteCode);
+        
+            workspaceSocketInstance.on("connect", () => {
+                console.log(workspaceSocketInstance.id + " connected on " + newWorkspace.name)
+
+                workspaceSocketInstance.emit("auth", auth?.userId, () => {
+                    workspaceSocketInstance.emit('initialize', (folders: any) => {
+                        console.log(newWorkspace.inviteCode + ": ");
+                        newWorkspace.workspaceFolder = folders;
+                        console.log(newWorkspace.workspaceFolder);
+    
+                        setWorkspacesConnections([...workspacesConnections, new SocketConnection(workspaceSocketInstance, newWorkspace)])
+                        
+                    })
+                })
+            });
+
+            setUserWorkspaces((userWorkspaces) => [
                 newWorkspace,
                 ...userWorkspaces
             ]);
+
+
+                
         })
 
         return () => {

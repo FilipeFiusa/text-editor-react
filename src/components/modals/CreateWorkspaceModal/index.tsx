@@ -46,7 +46,7 @@ const CreateWorkspaceModal = ({isOpen, setIsOpen, changeModal}: Props) => {
                 return;
             }
 
-            setIsOpen(true);
+            setIsOpen(false);
         });
     }
 
