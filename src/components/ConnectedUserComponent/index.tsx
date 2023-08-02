@@ -3,19 +3,24 @@ import './style.css';
 
 interface ConnectedUserProps{
     user: ConnectedUserProps
+    isLeader: boolean
 }
 
 interface ConnectedUser {
     connected: boolean;
     user: WorkspaceUser;
+    isLeader: boolean
 }
 
 interface WorkspaceUser {
     username: string;
     userId: number;
+    
 }
 
-const ConnectedUserComponent =  ({connected, user} : ConnectedUser) => {
+const ConnectedUserComponent =  ({connected, user, isLeader} : ConnectedUser) => {
+    console.log(isLeader)
+
     return (
         <div className='connected-users-container'>
             <div className='user-icon-container'>
@@ -25,7 +30,7 @@ const ConnectedUserComponent =  ({connected, user} : ConnectedUser) => {
             </div>
             <h4>{user.username}</h4>
             
-            <AiOutlineCrown size={20} />
+            {isLeader ? <AiOutlineCrown size={20} /> : ""}
         </div>
     )
 }

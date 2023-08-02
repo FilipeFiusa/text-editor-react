@@ -1,0 +1,24 @@
+.folder-context-menu {
+    position: absolute;
+    width: 200px;
+    background-color: #424549;
+
+    border-radius: 5px;
+}
+
+.folder-context-menu ul {
+    padding: 10px;
+    margin: 0;
+    list-style: none;
+}
+.folder-context-menu ul li {
+    padding: 5px 12px;
+    color: white;
+
+    border-bottom: 0;
+}
+/* hover */
+.folder-context-menu ul li:hover {
+    cursor: pointer;
+    background-color: #000000;
+}

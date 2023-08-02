@@ -48,6 +48,10 @@
   .online {
     background-color: rgb(53, 221, 53);
   }
+
+  .offline {
+    background-color: rgb(63, 66, 63);
+  }
   
   .connected-users-container h4 {
     font-size: 14px;

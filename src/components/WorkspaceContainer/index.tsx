@@ -14,6 +14,7 @@ let socket = io();
 interface Props {
     workspaceConnection? : WorkspaceConnection | undefined;
     currentFolder: Folder;
+    setCurrentFolder: Function
 }
 
 interface WorkspaceConnection {
@@ -24,15 +25,17 @@ interface WorkspaceConnection {
 interface ConnectedUser {
     connected: boolean;
     user: WorkspaceUser;
+    isLeader: boolean
 }
 
 interface WorkspaceUser {
     username: string;
     userId: number;
+
 }
 
-function WorkspaceContainer ( {workspaceConnection, currentFolder}: Props ){
-    const [workspaceFolder, setWokspaceFolder] = useState(new Folder('', '', [], []));
+function WorkspaceContainer ( {workspaceConnection, currentFolder, setCurrentFolder}: Props ){
+    const [workspaceFolder, setWorkspaceFolder] = useState<Folder>();
     const [isConnected, setIsConnected] = useState(socket.connected);
 
     const [connectedUsers, setConnectedUsers] = useState<ConnectedUser[]>([]);
@@ -69,7 +72,8 @@ function WorkspaceContainer ( {workspaceConnection, currentFolder}: Props ){
 
     useEffect(() => {
         const textarea = (document.getElementById("page-content") as HTMLInputElement);
-        console.log("Workspace Changed");
+
+        setWorkspaceFolder(workspaceConnection?.workspace.workspaceFolder);
 
         setCurrentFileName("");
 
@@ -81,10 +85,7 @@ function WorkspaceContainer ( {workspaceConnection, currentFolder}: Props ){
         //     console.log("authing")
             
         workspaceConnection?.socket.emit("get-users", (currentConnectedUsers: ConnectedUser[]) => {
-            console.log(currentConnectedUsers);
-
-            setConnectedUsers(currentConnectedUsers);
-            
+            setConnectedUsers(currentConnectedUsers); 
         })
 
         workspaceConnection?.socket.on("room-changed", content => {
@@ -102,6 +103,10 @@ function WorkspaceContainer ( {workspaceConnection, currentFolder}: Props ){
             setMessages(chatMessages);
         })
 
+        workspaceConnection?.socket.on("file-list-updated-specific", (updatedFolder) => {
+            setCurrentFolder(updatedFolder);
+        })
+
         return () => {
             workspaceConnection?.socket.off("room-changed")
             workspaceConnection?.socket.off("get-users")
@@ -115,6 +120,12 @@ function WorkspaceContainer ( {workspaceConnection, currentFolder}: Props ){
             console.log("users changed")
             setConnectedUsers(currentConnectedUsers);
         })
+
+        workspaceConnection?.socket.on("users-changed", (currentConnectedUsers: ConnectedUser[]) => {
+            console.log("users changed")
+            setConnectedUsers(currentConnectedUsers);
+        })
+        
         return () => {
             workspaceConnection?.socket.off("users-changed")
         };
@@ -145,12 +156,36 @@ function WorkspaceContainer ( {workspaceConnection, currentFolder}: Props ){
         const textarea = (document.getElementById("page-content") as HTMLInputElement);
         workspaceConnection?.socket.emit("text-changed", textarea.value);
     }
+
+    const addFolder = (newFolderName: string, folder: string) => {
+        workspaceConnection?.socket.emit("add-folder", newFolderName, folder);
+    }
+
+    const addFile = (newFileName: string, folder: string) => {
+        workspaceConnection?.socket.emit("add-file", newFileName, folder);
+    }
+
+    const renameFolder = (newFolderName: string, folder: string) => {
+        
+    }
+
+    const renameFile = (newFileName: string, folder: string) => {
+        
+    }
+
+    const deleteFolder = (folder: string) => {
+        
+    }
+    
+    const deleteFile = () => {
+        
+    }
     
     return(
         <div id='workspace-container'>
             <div id='workspace-header'>
                 <div>
-                    <h3>Menu</h3>
+                    <h3>Server code: {workspaceConnection?.workspace.inviteCode}</h3>
                     <h3 id="current-file">{ currentFileName }</h3>
                 </div>
             </div> 
@@ -168,9 +203,16 @@ function WorkspaceContainer ( {workspaceConnection, currentFolder}: Props ){
                             workspaceName={workspaceConnection?.workspace.name ? workspaceConnection?.workspace.name : "" }
                             
                             workspaceFolder={
-                                workspaceConnection?.workspace.workspaceFolder ? workspaceConnection?.workspace.workspaceFolder : new Folder('', '', [], [])
+                                currentFolder ? currentFolder : new Folder('', '', [], [])
                             } 
-                            changeSocketRoom={changeSocketRoom} />
+                            changeSocketRoom={changeSocketRoom} 
+                            
+                            addFolder={addFolder}
+                            addFile={addFile}
+                            renameFolder={renameFolder}
+                            deleteFolder={deleteFolder}
+                            
+                            />
                     </div>
                 </div>
 
@@ -180,7 +222,7 @@ function WorkspaceContainer ( {workspaceConnection, currentFolder}: Props ){
 
                 <div id="connected-users">
                     {connectedUsers.map(user => {
-                        return <ConnectedUserComponent key={user.user.userId} connected={user.connected} user={user.user}  />
+                        return <ConnectedUserComponent key={user.user.userId} connected={user.connected} user={user.user} isLeader={user.isLeader} />
                     })}
                 </div>
             </div>

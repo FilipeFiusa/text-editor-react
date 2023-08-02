@@ -32,6 +32,7 @@ const ChatComponent = ( {messages, sendMessage}: ChatComponentProps) => {
 
     return(
         <div key="asd" className="chat-messages-container">
+
             <div id="chat-container" className="messages-container">
                 {messages && messages.length > 0 ? messages?.map(message => {
                     return <ChatMessage key={message.id} message={message}/>

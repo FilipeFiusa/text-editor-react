@@ -38,13 +38,11 @@ function WorkspacePage(){
     }
 
     const workspaceOnClick = (workspace: Workspace | undefined) => {
-        console.log("clicqued")
         if(workspace != undefined){
-            console.log("not undefined")
-            console.log(workspace.name)
             for(let workspaceConnection of workspacesConnections){
                 if(workspaceConnection.workspace.inviteCode === workspace.inviteCode){
                     setCurrentWorkspace(workspaceConnection);
+                    setCurrentFolder(workspaceConnection.workspace.workspaceFolder);
                 }
             }
         }
@@ -62,26 +60,58 @@ function WorkspacePage(){
     const loadWorkspaceSockets = (userWorkspaces: Workspace[]) => {
         userWorkspaces.forEach( (workspace) => {
             const workspaceSocketInstance = io("http://localhost:3333/" + workspace.inviteCode);
-        
-            console.log(workspaceSocketInstance)
+
             workspaceSocketInstance.on("connect", () => {
-                console.log(workspaceSocketInstance.id + " connected on " + workspace.name)
 
                 workspaceSocketInstance.emit("auth", auth?.userId, () => {
-                    workspaceSocketInstance.emit('initialize', (folders: any) => {
-                        console.log(workspace.inviteCode + ": ");
+                    workspaceSocketInstance.emit('initialize', async (folders: any) => {
                         workspace.workspaceFolder = folders;
-                        console.log(workspace.workspaceFolder);
     
                         tempWorkspace.push(new SocketConnection(workspaceSocketInstance, workspace));
     
                         if(tempWorkspace.length === userWorkspaces.length){
-                            setWorkspacesConnections([...tempWorkspace])
+                            console.log("finished")
+
+                            console.log(tempWorkspace.length);
+                            console.log(workspacesConnections.length);
+                            
+                            setWorkspacesConnections(tempWorkspace)
+                            
+                            // await timeout(3000);
+
+                            // console.log(tempWorkspace.length);
+                            // console.log(workspacesConnections.length);
+
+                            addListenersToConnections()
                         }
                     })
                 })
             })
         })
+    }
+
+    const addListenersToConnections = () => {
+        console.log(tempWorkspace.length)
+        console.log(workspacesConnections.length)
+        for (const workspaceConnection of tempWorkspace) {
+            console.log("adding event listeners")
+            console.log("--------");
+            
+
+            console.log(currentWorkspace)
+            workspaceConnection.socket.on("file-list-updated", (updatedFolder) => {
+                console.log(workspaceConnection.workspace)
+                console.log(updatedFolder)
+                console.log(currentWorkspace?.workspace.name)
+                console.log(workspaceConnection.workspace.name)
+                console.log("updating")
+                workspaceConnection.workspace.workspaceFolder = updatedFolder;
+            })   
+        }
+    }
+
+    const timeout = (delay: number) => {
+        return new Promise( res => setTimeout(res, delay) );
     }
 
     useEffect(() => {
@@ -114,8 +144,6 @@ function WorkspacePage(){
         const connection = io("http://localhost:3333");
 
         setMainConnection(connection);
-
-        console.log("Main connection", connection.id)
      
         connection.on('connect', () => {
             setIsConnected(false);
@@ -128,8 +156,6 @@ function WorkspacePage(){
 
         connection.on('user-workspaces', userWorkspaces => {
             setUserWorkspaces(userWorkspaces);
-
-            console.log(userWorkspaces)
 
             loadWorkspaceSockets(userWorkspaces);
         })
@@ -172,6 +198,16 @@ function WorkspacePage(){
         };
     }, [])
 
+    // useEffect(() => {
+    //     console.log("updated");
+    //     console.log(workspacesConnections.length);
+        
+    //     addListenersToConnections();
+        
+    //     return () => {
+    //         addListenersToConnections();
+    //     }
+    // }, [workspacesConnections])
 
     return( 
         <div id="main-page">
@@ -189,7 +225,7 @@ function WorkspacePage(){
             </div>
 
             <div id="content-container">
-                <WorkspaceContainer currentFolder={currentFolder} workspaceConnection={currentWorkspace} />
+                <WorkspaceContainer currentFolder={currentFolder} setCurrentFolder={setCurrentFolder} workspaceConnection={currentWorkspace} />
             </div>
 
             <ChooseWorkspaceOptionModal isOpen={chooseWorkspaceActive} setIsOpen={setChooseWorkspaceActive} changeModal={changeModal} />
