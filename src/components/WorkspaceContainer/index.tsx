@@ -203,7 +203,7 @@ function WorkspaceContainer ( {workspaceConnection, currentFolder, setCurrentFol
                             workspaceName={workspaceConnection?.workspace.name ? workspaceConnection?.workspace.name : "" }
                             
                             workspaceFolder={
-                                currentFolder ? currentFolder : new Folder('', '', [], [])
+                                currentFolder ? currentFolder : new Folder('', '/', '', '', [], [])
                             } 
                             changeSocketRoom={changeSocketRoom} 
                             

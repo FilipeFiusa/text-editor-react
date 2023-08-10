@@ -56,21 +56,23 @@ function MenuFileList({
       }, []);
 
     const mapFolder = (folder: Folder) => {
+        console.log(folder)
+
         return(
-            <div key={folder.root}>   
+            <div key={folder.fullPath == "" ? "/" : folder.fullPath}>   
                 <li 
                     onClick={() => checkFolderClicked(folder)}
                     onContextMenu={ (e) => folderContextMenu(e, folder) }>
-                    <div><img id={folder.root + "_icon"} src={ArrowIcon} alt="" /></div>
+                    <div><img id={folder.fullPath + "_icon"} src={ArrowIcon} alt="" /></div>
                     <div><img src={FolderIcon} alt="" /></div>
-                    { folder.root.split("/").at(-1)?.length == 0 ? workspaceName : folder.root.split("/").at(-1) }
+                    { folder.folderName == "/" ? workspaceName : folder.folderName }
                     </li>
-                <ul className='close' id={folder.root}>
+                <ul className='close' id={folder.fullPath}>
                     {folder.folders.length !== 0 ? folder.folders.map((f) => {return mapFolder(f)}) : ""}
                     {folder.files.length !== 0 ? folder.files.map(file => { 
                         return (
                             <li key={file.fileName} 
-                                onClick={() => changeSocketRoom(folder.root + "/" + file.fileName)}
+                                onClick={() => changeSocketRoom(folder.fullPath + "/" + file.fileName)}
                                 onContextMenu={ (e) => fileContextMenu(e)}>
                             <img src={FileIcon} alt="" />
                             {file.fileName}</li>
@@ -92,8 +94,10 @@ function MenuFileList({
     }
 
     function checkFolderClicked(folder: Folder){
-        const test = document.getElementById(folder.root);
-        const icon = document.getElementById(folder.root + "_icon");
+        console.log(folder)
+
+        const test = document.getElementById(folder.fullPath == "" ? "/" : folder.fullPath );
+        const icon = document.getElementById(folder.fullPath + "_icon");
         
         if(test?.classList.length === 0){
             icon?.classList.remove("open-image")
@@ -112,7 +116,7 @@ function MenuFileList({
             y: e.pageY
         })
 
-        setCurrentClickedFolder(clickedFolder.root);
+        setCurrentClickedFolder(clickedFolder.fullPath);
     }
 
     const fileContextMenu = (e: React.MouseEvent<HTMLLIElement, MouseEvent>) => {

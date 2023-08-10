@@ -21,7 +21,7 @@ function WorkspacePage(){
 
     const [currentWorkspace, setCurrentWorkspace] = useState<SocketConnection>();
 
-    const [currentFolder, setCurrentFolder] = useState<Folder>(new Folder("", "", [], []));
+    const [currentFolder, setCurrentFolder] = useState<Folder>(new Folder("", "", "","", [], []));
 
     const [isSelected, setIsSelected] = useState(false);
 
@@ -38,9 +38,12 @@ function WorkspacePage(){
     }
 
     const workspaceOnClick = (workspace: Workspace | undefined) => {
+        console.log(workspace)
+
         if(workspace != undefined){
             for(let workspaceConnection of workspacesConnections){
                 if(workspaceConnection.workspace.inviteCode === workspace.inviteCode){
+                    console.log(workspaceConnection.workspace.workspaceFolder)
                     setCurrentWorkspace(workspaceConnection);
                     setCurrentFolder(workspaceConnection.workspace.workspaceFolder);
                 }

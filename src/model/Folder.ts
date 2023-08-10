@@ -2,13 +2,17 @@ import File from "./File";
 
 class Folder{
     id: string
-    root: string;
+    fullPath: string;
+    parentFolder: string;
+    folderName: string;
     folders: Folder[];
     files: File[];
 
-    constructor(id: string, root: string, folders: Folder[], files: File[]){
+    constructor(id: string, fullPath: string, parentFolder: string, folderName: string, folders: Folder[], files: File[]){
         this.id = id;
-        this.root = root;
+        this.folderName = folderName;
+        this.fullPath = fullPath;
+        this.parentFolder = parentFolder;
         this.folders = folders;
         this.files = files;
     }
