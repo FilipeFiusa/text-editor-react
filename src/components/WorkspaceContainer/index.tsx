@@ -166,7 +166,7 @@ function WorkspaceContainer ( {workspaceConnection, currentFolder, setCurrentFol
     }
 
     const renameFolder = (newFolderName: string, folder: string) => {
-        
+        workspaceConnection?.socket.emit("rename-folder", newFolderName, folder);
     }
 
     const renameFile = (newFileName: string, folder: string) => {

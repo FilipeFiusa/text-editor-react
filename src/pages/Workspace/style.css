@@ -35,8 +35,11 @@
 }
 
 #content-container {
-    width: calc(100% - 110px);
-    height: 100%;
+    /* width: calc(100% - 110px); */
+
+    flex: 1;
+
+    display: flex;
 } 
 
 hr{

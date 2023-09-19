@@ -121,8 +121,6 @@ function MenuFileList({
 
     const fileContextMenu = (e: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
         e.preventDefault();
-        console.log("file: ");
-        console.log(e.pageX, e.pageY);
 
         setClicked(true);
 
@@ -130,8 +128,6 @@ function MenuFileList({
             x: e.pageX,
             y: e.pageY
         })
-
-        console.log(points)
     }
 
 
@@ -146,17 +142,18 @@ function MenuFileList({
 
     const handleModalSubmit = (modalInputText: string) => {
         if(menuType == "AddFolder" && currentFolder != "") {
-            console.log(modalInputText)
-            console.log(currentFolder)
-
             addFolder(modalInputText, currentFolder);
         }
 
         if(menuType == "AddFile" && currentFolder != "") {
+            addFile(modalInputText, currentFolder);
+        }
+
+        if(menuType == "RenameFolder" && currentFolder != "") {
             console.log(modalInputText)
             console.log(currentFolder)
 
-            addFile(modalInputText, currentFolder);
+            renameFolder(modalInputText, currentFolder);
         }
 
         setCurrentFolder("");
