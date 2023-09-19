@@ -11,23 +11,41 @@
 #workspace-header {
     background-color: var(--bg-color);
 
+    display: flex;
     text-align: center;
     min-height: 55px;
     max-height: 55px;
 }
 
-#workspace-header div {
-    display: flex;
+#workspace-header .left {
+    width: 400px;
 }
 
-#workspace-header h3:first-child {
-    width: 500px;
-    padding: 15px 0;
+#workspace-header .right {
+    flex: 1;
+    padding: 0 20px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#workspace-header .right .user-icon{
+    height: 30px;
+    width: 30px;
+
+    cursor: pointer;
 }
 
 #workspace-header h3 {
-    width: 100%;
     padding: 15px 0;
+}
+
+#workspace-header .current-file-title {
+    display: flex;
+    flex-direction: row;
+
+    align-items: center;
 }
 
 #workspace-main-container {
@@ -110,7 +128,18 @@ p {
 
     display: flex;
     flex-direction: column;
+
+    width: 400px;
 }
+
+#menu-container h3 {
+    width: 100%;
+    padding: 15px 0;
+
+    width: 100%;
+    text-align: center;
+}
+
 
 .chat-container {
     padding-left: 30px;

@@ -7,6 +7,8 @@ import Workspace from "../../model/Workpace";
 import ChatComponent from "../ChatComponent";
 import ConnectedUserComponent from "../ConnectedUserComponent";
 import MenuFileList from '../MenuFileList';
+import FileIcon from "../../icons/file.svg";
+import UsersIcon from '../../icons/users.svg';
 import './style.css';
 
 let socket = io();
@@ -37,6 +39,7 @@ interface WorkspaceUser {
 function WorkspaceContainer ( {workspaceConnection, currentFolder, setCurrentFolder}: Props ){
     const [workspaceFolder, setWorkspaceFolder] = useState<Folder>();
     const [isConnected, setIsConnected] = useState(socket.connected);
+    const [isConnectedUserActive, setIsConnectedUserActive] = useState(false);
 
     const [connectedUsers, setConnectedUsers] = useState<ConnectedUser[]>([]);
 
@@ -62,6 +65,7 @@ function WorkspaceContainer ( {workspaceConnection, currentFolder, setCurrentFol
 
     const openChat = () => {
         setCurrentContentActive(2);
+        setCurrentFileName("General Chat")
     }
   
     const sendMessage = (content: string) => {
@@ -145,14 +149,14 @@ function WorkspaceContainer ( {workspaceConnection, currentFolder, setCurrentFol
         })
     }, [workspaceConnection, messages])
 
-    function changeSocketRoom(roomName: string){
+    const changeSocketRoom = (roomName: string) => {
         setCurrentContentActive(1);
         workspaceConnection?.socket.emit("change-room", roomName);
 
         setCurrentFileName(roomName.replace("//", ""))
     }
 
-    function onTextAreaInput(){
+    const onTextAreaInput = () => {
         const textarea = (document.getElementById("page-content") as HTMLInputElement);
         workspaceConnection?.socket.emit("text-changed", textarea.value);
     }
@@ -180,13 +184,25 @@ function WorkspaceContainer ( {workspaceConnection, currentFolder, setCurrentFol
     const deleteFile = () => {
         
     }
+
+    const toggleConnectedUsers = () => {
+        setIsConnectedUserActive(!isConnectedUserActive)
+    }
     
     return(
         <div id='workspace-container'>
             <div id='workspace-header'>
-                <div>
+                <div className="left">
                     <h3>Server code: {workspaceConnection?.workspace.inviteCode}</h3>
-                    <h3 id="current-file">{ currentFileName }</h3>
+                </div>
+
+                <div className="right">
+                    <div className="current-file-title">
+                        <img src={currentFileName && currentFileName !== "General Chat" ? FileIcon : ""} alt="" />
+                        <h3 id="current-file">{ currentFileName ? currentFileName : "General Chat" }</h3>
+                    </div>
+
+                    <img className="user-icon" onClick={toggleConnectedUsers} src={UsersIcon} alt="" />
                 </div>
             </div> 
 
@@ -220,7 +236,7 @@ function WorkspaceContainer ( {workspaceConnection, currentFolder, setCurrentFol
                     {currentContent(currentContentActive)}
                 </div>
 
-                <div id="connected-users">
+                <div className={ isConnectedUserActive ? "" : "hide" } id="connected-users">
                     {connectedUsers.map(user => {
                         return <ConnectedUserComponent key={user.user.userId} connected={user.connected} user={user.user} isLeader={user.isLeader} />
                     })}
