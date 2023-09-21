@@ -56,7 +56,7 @@ function MenuFileList({
       }, []);
 
     const mapFolder = (folder: Folder) => {
-        console.log(folder)
+        //console.log(folder)
 
         return(
             <div key={folder.fullPath == "" ? "/" : folder.fullPath}>   
@@ -68,8 +68,8 @@ function MenuFileList({
                     { folder.folderName == "/" ? workspaceName : folder.folderName }
                     </li>
                 <ul className='close' id={folder.fullPath}>
-                    {folder.folders.length !== 0 ? folder.folders.map((f) => {return mapFolder(f)}) : ""}
-                    {folder.files.length !== 0 ? folder.files.map(file => { 
+                    {folder.subFolders && folder.subFolders.length !== 0 ? folder.subFolders.map((f) => {return mapFolder(f)}) : ""}
+                    {folder.files && folder.files.length !== 0 ? folder.files.map(file => { 
                         return (
                             <li key={file.fileName} 
                                 onClick={() => changeSocketRoom(folder.fullPath + "/" + file.fileName)}
@@ -94,7 +94,7 @@ function MenuFileList({
     }
 
     function checkFolderClicked(folder: Folder){
-        console.log(folder)
+        //console.log(folder)
 
         const test = document.getElementById(folder.fullPath == "" ? "/" : folder.fullPath );
         const icon = document.getElementById(folder.fullPath + "_icon");
@@ -151,7 +151,7 @@ function MenuFileList({
 
         if(menuType == "RenameFolder" && currentFolder != "") {
             console.log(modalInputText)
-            console.log(currentFolder)
+            //console.log(currentFolder)
 
             renameFolder(modalInputText, currentFolder);
         }

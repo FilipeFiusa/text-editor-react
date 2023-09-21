@@ -5,7 +5,7 @@ class Folder{
     fullPath: string;
     parentFolder: string;
     folderName: string;
-    folders: Folder[];
+    subFolders: Folder[];
     files: File[];
 
     constructor(id: string, fullPath: string, parentFolder: string, folderName: string, folders: Folder[], files: File[]){
@@ -13,7 +13,7 @@ class Folder{
         this.folderName = folderName;
         this.fullPath = fullPath;
         this.parentFolder = parentFolder;
-        this.folders = folders;
+        this.subFolders = folders;
         this.files = files;
     }
 }
