@@ -9,6 +9,7 @@ import './style.css';
 import FolderContextMenu from '../FolderContextMenu';
 import { useEffect, useState } from 'react';
 import MenuListModal from '../modals/MenuListModal';
+import FileContextMenu from '../FileContextMenu';
 
 interface MenuFileListProps {
     workspaceFolder: Folder | null;
@@ -19,7 +20,8 @@ interface MenuFileListProps {
     addFile(fileName: string, folder: string): any;
     renameFolder(newFolderName: string, folder: string): any;
     deleteFolder(folder: string): any
-
+    renameFile(parentId: string, newFilerName: string, fileId: string): any;
+    deleteFile(parentId: string, fileId: string): any
 }
 
 function MenuFileList({
@@ -29,25 +31,29 @@ function MenuFileList({
     addFolder,
     addFile,
     renameFolder,
-    deleteFolder
+    deleteFolder,
+    renameFile,
+    deleteFile
 }: MenuFileListProps){
     const [menuListModalActive, setMenuListModalActive] = useState(false);
     const [modalText, setModalText] = useState("");
     const [menuType, setMenuType] = useState("");
-    const [currentFolder, setCurrentFolder] = useState("");
     const [clicked, setClicked] = useState(false);
-    const [currentClickedFolder, setCurrentClickedFolder] = useState("");
-    const [points, setPoints] = useState({
-        x: 0,
-        y: 0
-    })
+    const [currentFolder, setCurrentFolder] = useState<Folder | null>();
+    const [currentClickedFolder, setCurrentClickedFolder] = useState<Folder | null>();
+    const [currentFile, setCurrentFile] = useState<File | null>();
+    const [currentClickedFile, setCurrentClickedFile] = useState<File | null>();
+
+    const [folderPoints, setFolderPoints] = useState({ x: 0, y: 0 })
+    const [filePoints, setFilePoints] = useState({ x: 0, y: 0 })
 
     
 
     useEffect(() => {
         const handleClick = () => {
             setClicked(false)
-            setCurrentClickedFolder("");
+            setCurrentClickedFolder(null);
+            setCurrentClickedFile(null);
         };
         window.addEventListener("click", handleClick);
         return () => {
@@ -56,8 +62,6 @@ function MenuFileList({
       }, []);
 
     const mapFolder = (folder: Folder) => {
-        //console.log(folder)
-
         return(
             <div key={folder.fullPath == "" ? "/" : folder.fullPath}>   
                 <li 
@@ -70,23 +74,35 @@ function MenuFileList({
                 <ul className='close' id={folder.fullPath}>
                     {folder.subFolders && folder.subFolders.length !== 0 ? folder.subFolders.map((f) => {return mapFolder(f)}) : ""}
                     {folder.files && folder.files.length !== 0 ? folder.files.map(file => { 
+                        file.parentId = folder.id
                         return (
                             <li key={file.fileName} 
                                 onClick={() => changeSocketRoom(folder.fullPath + "/" + file.fileName)}
-                                onContextMenu={ (e) => fileContextMenu(e)}>
+                                onContextMenu={ (e) => fileContextMenu(e, file)}>
                             <img src={FileIcon} alt="" />
                             {file.fileName}</li>
                         )}): ""}
                 </ul>    
 
-                {currentClickedFolder != ""
+                {currentClickedFolder
                     ? <FolderContextMenu 
-                        x={points.x} 
-                        y={points.y}
+                        x={folderPoints.x} 
+                        y={folderPoints.y}
 
                         folder={currentClickedFolder}
                         
                         openModal={openModal}
+                        /> 
+                    : ""}
+
+                {currentClickedFile
+                    ? <FileContextMenu 
+                        x={filePoints.x} 
+                        y={filePoints.y}
+
+                        file={currentClickedFile}
+                        
+                        openModalFile={openModalFile}
                         /> 
                     : ""}
             </div>
@@ -111,27 +127,31 @@ function MenuFileList({
     const folderContextMenu = (e: React.MouseEvent<HTMLLIElement, MouseEvent>, clickedFolder: Folder ) => {
         e.preventDefault();
         setClicked(true);
-        setPoints({
+        setFolderPoints({
             x: e.pageX,
             y: e.pageY
         })
 
-        setCurrentClickedFolder(clickedFolder.fullPath);
+        setCurrentClickedFolder(clickedFolder);
     }
 
-    const fileContextMenu = (e: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
+    const fileContextMenu = (e: React.MouseEvent<HTMLLIElement, MouseEvent>, clickedFile: File) => {
         e.preventDefault();
 
         setClicked(true);
 
-        setPoints({
+        setFilePoints({
             x: e.pageX,
             y: e.pageY
         })
+
+        console.log(clickedFile.parentId)
+
+        setCurrentClickedFile(clickedFile);
     }
 
 
-    const openModal = (modalText: string, menuType: string, folder?: string) => {
+    const openModal = (modalText: string, menuType: string, folder?: Folder) => {
         setMenuListModalActive(true);
         setModalText(modalText);
         setMenuType(menuType);
@@ -140,25 +160,63 @@ function MenuFileList({
         }
     }
 
+    const openModalFile = (modalText: string, menuType: string, file?: File) => {
+        setMenuListModalActive(true);
+        setModalText(modalText);
+        setMenuType(menuType);
+
+        console.log(modalText)
+        console.log(menuType)
+
+        if(file){
+            setCurrentFile(file);
+        }
+    }
+
     const handleModalSubmit = (modalInputText: string) => {
-        if(menuType == "AddFolder" && currentFolder != "") {
-            addFolder(modalInputText, currentFolder);
+        if(menuType == "AddFolder" && currentFolder) {
+            addFolder(modalInputText, currentFolder.id);
         }
 
-        if(menuType == "AddFile" && currentFolder != "") {
-            addFile(modalInputText, currentFolder);
+        if(menuType == "AddFile" && currentFolder) {
+            addFile(modalInputText, currentFolder.id);
         }
 
-        if(menuType == "RenameFolder" && currentFolder != "") {
+        if(menuType == "RenameFolder" && currentFolder) {
             console.log(modalInputText)
             //console.log(currentFolder)
 
-            renameFolder(modalInputText, currentFolder);
+            renameFolder(modalInputText, currentFolder.id);
         }
 
-        setCurrentFolder("");
+        if(menuType == "DeleteFolder" && currentFolder) {
+            console.log(currentFolder)
+            //console.log(currentFolder)
+
+            deleteFolder(currentFolder.id);
+        }
+
+        if(menuType == "RenameFile" && currentFile && currentFile.parentId) {
+            console.log(currentFile.parentId)
+            //console.log(currentFolder)
+
+            renameFile(currentFile.parentId, modalInputText, currentFile.id);
+        }
+
+
+        if(menuType == "DeleteFile" && currentFile && currentFile.parentId) {
+            console.log(currentFile)
+            //console.log(currentFolder)
+
+            deleteFile(currentFile.parentId, currentFile.id);
+        }
+
+        setCurrentFolder(null);
+        setCurrentFile(null);
         setMenuType("");
     }
+
+    
 
     return (
         <div>
@@ -170,7 +228,8 @@ function MenuFileList({
                 isOpen={menuListModalActive} 
                 setIsOpen={setMenuListModalActive} 
                 modalText={modalText} 
-                handleModalSubmit={handleModalSubmit} />            
+                handleModalSubmit={handleModalSubmit} 
+                modalType={menuType} />            
         </div>
     );
 }

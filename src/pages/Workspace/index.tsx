@@ -215,7 +215,7 @@ function WorkspacePage(){
     return( 
         <div id="main-page">
             <div className='side-menu'>
-                <MenuItem itemType={1} onClick={friendsOnClick} />
+                <MenuItem key={0} itemType={1} onClick={friendsOnClick} />
                 <hr></hr>
 
                 {

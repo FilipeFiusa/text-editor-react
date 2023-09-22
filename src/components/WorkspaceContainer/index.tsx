@@ -173,16 +173,16 @@ function WorkspaceContainer ( {workspaceConnection, currentFolder, setCurrentFol
         workspaceConnection?.socket.emit("rename-folder", newFolderName, folder);
     }
 
-    const renameFile = (newFileName: string, folder: string) => {
-        
+    const deleteFolder = (folder: string) => {
+        workspaceConnection?.socket.emit("delete-folder", folder);
     }
 
-    const deleteFolder = (folder: string) => {
-        
+    const renameFile = (parentId: string, newFileName: string, fileId: string) => {
+        workspaceConnection?.socket.emit("rename-file", parentId, newFileName, fileId);
     }
     
-    const deleteFile = () => {
-        
+    const deleteFile = (parentId: string, fileId: string) => {
+        workspaceConnection?.socket.emit("delete-file", parentId, fileId);
     }
 
     const toggleConnectedUsers = () => {
@@ -227,7 +227,8 @@ function WorkspaceContainer ( {workspaceConnection, currentFolder, setCurrentFol
                             addFile={addFile}
                             renameFolder={renameFolder}
                             deleteFolder={deleteFolder}
-                            
+                            renameFile={renameFile}
+                            deleteFile={deleteFile}
                             />
                     </div>
                 </div>

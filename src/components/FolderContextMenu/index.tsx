@@ -1,14 +1,15 @@
 import { useState } from 'react';
 import MenuListModal from '../modals/MenuListModal';
 import './style.css';
+import Folder from '../../model/Folder';
 
 
 interface FolderContextMenuProps{
     x: number;
     y: number;
-    folder: string;
+    folder: Folder;
 
-    openModal: (modalText: string, menuType: string, folder?: string) => any;
+    openModal: (modalText: string, menuType: string, folder?: Folder) => any;
 }
 
 const FolderContextMenu = ({x, y, folder, openModal} : FolderContextMenuProps) => {
@@ -30,7 +31,7 @@ const FolderContextMenu = ({x, y, folder, openModal} : FolderContextMenuProps) =
     }
 
     const handleDeleteClick = () => {
-        console.log("Delete clicked on " + folder);
+        openModal("Are you sure you want do delete folder ?", "DeleteFolder", folder)
     }
     
     return (

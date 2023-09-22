@@ -9,9 +9,10 @@ interface Props {
     setIsOpen: (isOpen: boolean) => void;
     modalText: string;
     handleModalSubmit: (inputText: string) => any;
+    modalType: string
 }
 
-const MenuListModal = ({isOpen, setIsOpen, modalText, handleModalSubmit}: Props) => {
+const MenuListModal = ({isOpen, setIsOpen, modalText, handleModalSubmit, modalType}: Props) => {
     const [ textContent, seTextContent ] = useState("");
 
     const customStyles = {
@@ -37,27 +38,52 @@ const MenuListModal = ({isOpen, setIsOpen, modalText, handleModalSubmit}: Props)
         closeModal();
     }
 
-    return (
-        <Modal
-            isOpen={isOpen}
-            onRequestClose={closeModal}
-            style={customStyles}
-            ariaHideApp={false}
-            contentLabel="Example Modal">
-            <div className='join-workspace'>
-                <h2>{modalText}</h2>
-                <form onSubmit={handleSubmit}>
-                    <input type="text" placeholder='' onChange={(e) => seTextContent(e.target.value)} required/>
-
-                    <div className='buttons-container'>
-                        <input type="button" value="Cancel"  onClick={() => {} } />
-                        <input type="submit" value="Ok" />
+    const renderModal = (modalType: string) => {
+        if(modalType === "DeleteFolder" || modalType === "DeleteFile"){
+            return (
+                <Modal
+                    isOpen={isOpen}
+                    onRequestClose={closeModal}
+                    style={customStyles}
+                    ariaHideApp={false}
+                    contentLabel="Example Modal">
+                    <div className='join-workspace'>
+                        <h2>{modalText}</h2>
+                        <form onSubmit={handleSubmit}>               
+                            <div className='buttons-container'>
+                                <input type="button" value="Cancel"  onClick={() => {} } />
+                                <input type="submit" value="Ok" />
+                            </div>
+                        </form>
                     </div>
-                </form>
-            </div>
-        </Modal>
+                </Modal>
+            );
+        }else {
+            return (
+                <Modal
+                    isOpen={isOpen}
+                    onRequestClose={closeModal}
+                    style={customStyles}
+                    ariaHideApp={false}
+                    contentLabel="Example Modal">
+                    <div className='join-workspace'>
+                        <h2>{modalText}</h2>
+                        <form onSubmit={handleSubmit}>               
+                            <input type="text" placeholder='' onChange={(e) => seTextContent(e.target.value)} required/>
+        
+                            <div className='buttons-container'>
+                                <input type="button" value="Cancel"  onClick={() => {} } />
+                                <input type="submit" value="Ok" />
+                            </div>
+                        </form>
+                    </div>
+                </Modal>
+            )
+        }
+        
+    }
 
-    );
+    return renderModal(modalType);
 }   
 
 export default MenuListModal;

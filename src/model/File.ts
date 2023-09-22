@@ -1,12 +1,15 @@
 class File{
-    //id: string
+    id: string
     fileName: string;
     path: string;
     content: string;
     createdAt: Date;
     lastChange: Date;
 
-    constructor(fileName: string, path: string, content: string, createdAt: Date, lastChange: Date){
+    parentId?: string
+
+    constructor(id: string, fileName: string, path: string, content: string, createdAt: Date, lastChange: Date){
+        this.id= id;
         this.fileName = fileName;
         this.path = path;
         this.content = content;

@@ -19,8 +19,6 @@ interface WorkspaceUser {
 }
 
 const ConnectedUserComponent =  ({connected, user, isLeader} : ConnectedUser) => {
-    console.log(isLeader)
-
     return (
         <div className='connected-users-container'>
             <div className='user-icon-container'>
