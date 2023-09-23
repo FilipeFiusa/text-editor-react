@@ -11,9 +11,12 @@ import Folder from '../../model/Folder';
 import SocketConnection from '../../model/SocketConnection';
 import Workspace from '../../model/Workpace';
 import './style.css';
+import SocialContainer from '../../components/SocialContainer';
 
 function WorkspacePage(){
     const [modalActive, setModalActive] = useState(0);
+    
+    const [containerType, setContainerType] = useState("SocialContainer");
 
     const [chooseWorkspaceActive, setChooseWorkspaceActive] = useState(false);
     const [createWorkspaceActive, setCreateWorkspaceActive] = useState(false);
@@ -34,16 +37,19 @@ function WorkspacePage(){
 
 
     const friendsOnClick = () => {
-        console.log("Friends clicked");
+        if(containerType !== "SocialContainer"){
+            setContainerType("SocialContainer")
+        }
     }
 
     const workspaceOnClick = (workspace: Workspace | undefined) => {
-        console.log(workspace)
+        if(containerType !== "WorkspaceContainer"){
+            setContainerType("WorkspaceContainer")
+        }
 
         if(workspace != undefined){
             for(let workspaceConnection of workspacesConnections){
                 if(workspaceConnection.workspace.inviteCode === workspace.inviteCode){
-                    console.log(workspaceConnection.workspace.workspaceFolder)
                     setCurrentWorkspace(workspaceConnection);
                     setCurrentFolder(workspaceConnection.workspace.workspaceFolder);
                 }
@@ -73,18 +79,7 @@ function WorkspacePage(){
                         tempWorkspace.push(new SocketConnection(workspaceSocketInstance, workspace));
     
                         if(tempWorkspace.length === userWorkspaces.length){
-                            console.log("finished")
-
-                            console.log(tempWorkspace.length);
-                            console.log(workspacesConnections.length);
-                            
                             setWorkspacesConnections(tempWorkspace)
-                            
-                            // await timeout(3000);
-
-                            // console.log(tempWorkspace.length);
-                            // console.log(workspacesConnections.length);
-
                             addListenersToConnections()
                         }
                     })
@@ -227,9 +222,12 @@ function WorkspacePage(){
                 <MenuItem itemType={3} onClick={newWorkspaceOnClick}/>
             </div>
 
-            <div id="content-container">
-                <WorkspaceContainer currentFolder={currentFolder} setCurrentFolder={setCurrentFolder} workspaceConnection={currentWorkspace} />
-            </div>
+            { containerType === "SocialContainer" ? <SocialContainer /> : <WorkspaceContainer currentFolder={currentFolder} setCurrentFolder={setCurrentFolder} workspaceConnection={currentWorkspace} />}
+
+            {/* <div id="content-container">
+                <SocialContainer />
+            </div> */}
+            {/* <WorkspaceContainer currentFolder={currentFolder} setCurrentFolder={setCurrentFolder} workspaceConnection={currentWorkspace} /> */}
 
             <ChooseWorkspaceOptionModal isOpen={chooseWorkspaceActive} setIsOpen={setChooseWorkspaceActive} changeModal={changeModal} />
             <CreateWorkspaceModal isOpen={createWorkspaceActive} setIsOpen={setCreateWorkspaceActive} changeModal={changeModal}/>

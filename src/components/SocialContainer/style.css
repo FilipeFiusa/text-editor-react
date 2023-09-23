@@ -1,0 +1,101 @@
+.social-container {
+    font-family: 'Roboto', sans-serif;
+    color: var(--primary-color);
+
+    display: flex;
+    flex-direction: column;
+
+    flex: 1;
+}
+
+.social-header {
+    background-color: var(--bg-color);
+
+    display: flex;
+    text-align: center;
+
+    height: 5vh;
+}
+
+.social-header .left {
+    width: 400px;
+    display: flex;
+    align-items: center; 
+    justify-content: center;
+}
+
+.social-header .right {
+    flex: 1;
+    padding: 0 20px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.social-header .right .user-icon{
+    height: 30px;
+    width: 30px;
+
+    cursor: pointer;
+}
+
+.social-header .receiving-user-container{
+    display: flex;
+    flex: 1;
+    flex-direction: row;
+    align-items: center;
+}
+
+.social-main-container {
+    display: flex;
+
+    flex: 1;
+
+    background-color: aliceblue;
+}
+
+/*==========MENU============*/
+
+.social-menu-container {
+    width: 400px;
+    height: 95vh;
+
+    background-color: var(--bg-color); 
+    display: flex;
+    flex-direction: column;
+}
+
+.direct-users-list {
+    min-height: 0;
+    flex: 1;
+    overflow: scroll;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.user-profile {
+    min-height: 0;
+    max-width: 400px;
+    height: 70px;
+
+    padding: 0 20px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    overflow: auto;
+}
+
+#page-container {
+    flex: 1;
+
+    background-color: var(--bg-color-v2);
+    text-align: center;
+
+    display: flex;
+}
+
+
