@@ -43,10 +43,10 @@
 hr{
     width: 80%;
 }
-/* 
-ul{
-    padding-left: 30px;
-} */
+
+.hidden {
+    display: none;
+}
 
 .create-workspace {
     display: flex;

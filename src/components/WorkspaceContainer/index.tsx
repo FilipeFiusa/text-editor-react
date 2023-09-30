@@ -16,7 +16,8 @@ let socket = io();
 interface Props {
     workspaceConnection? : WorkspaceConnection | undefined;
     currentFolder: Folder;
-    setCurrentFolder: Function
+    setCurrentFolder: Function;
+    goToDirectChat: (roomName: string) => void;
 }
 
 interface WorkspaceConnection {
@@ -32,11 +33,11 @@ interface ConnectedUser {
 
 interface WorkspaceUser {
     username: string;
-    userId: number;
+    id: string;
 
 }
 
-function WorkspaceContainer ( {workspaceConnection, currentFolder, setCurrentFolder}: Props ){
+function WorkspaceContainer ( {workspaceConnection, currentFolder, setCurrentFolder, goToDirectChat}: Props ){
     const [workspaceFolder, setWorkspaceFolder] = useState<Folder>();
     const [isConnected, setIsConnected] = useState(socket.connected);
     const [isConnectedUserActive, setIsConnectedUserActive] = useState(false);
@@ -90,6 +91,7 @@ function WorkspaceContainer ( {workspaceConnection, currentFolder, setCurrentFol
             
         workspaceConnection?.socket.emit("get-users", (currentConnectedUsers: ConnectedUser[]) => {
             setConnectedUsers(currentConnectedUsers); 
+            console.log(currentConnectedUsers)
         })
 
         workspaceConnection?.socket.on("room-changed", content => {
@@ -125,13 +127,14 @@ function WorkspaceContainer ( {workspaceConnection, currentFolder, setCurrentFol
             setConnectedUsers(currentConnectedUsers);
         })
 
-        workspaceConnection?.socket.on("users-changed", (currentConnectedUsers: ConnectedUser[]) => {
-            console.log("users changed")
-            setConnectedUsers(currentConnectedUsers);
+        workspaceConnection?.socket.on("direct-chat-created", (roomName: string) => {
+            console.log(roomName)
+            goToDirectChat(roomName)
         })
         
         return () => {
             workspaceConnection?.socket.off("users-changed")
+            workspaceConnection?.socket.off("direct-chat-created")
         };
     }, [workspaceConnection])
 
@@ -188,6 +191,14 @@ function WorkspaceContainer ( {workspaceConnection, currentFolder, setCurrentFol
     const toggleConnectedUsers = () => {
         setIsConnectedUserActive(!isConnectedUserActive)
     }
+
+    const createDirectMessage = (receivingUserId: string) => {
+        if(auth?.userId === receivingUserId) {
+            return
+        }
+
+        workspaceConnection?.socket.emit("start-direct-chat", receivingUserId);
+    }
     
     return(
         <div id='workspace-container'>
@@ -239,7 +250,7 @@ function WorkspaceContainer ( {workspaceConnection, currentFolder, setCurrentFol
 
                 <div className={ isConnectedUserActive ? "" : "hide" } id="connected-users">
                     {connectedUsers.map(user => {
-                        return <ConnectedUserComponent key={user.user.userId} connected={user.connected} user={user.user} isLeader={user.isLeader} />
+                        return <ConnectedUserComponent createDirectMessage={createDirectMessage} key={user.user.id} connected={user.connected} user={user.user} isLeader={user.isLeader} />
                     })}
                 </div>
             </div>

@@ -1,26 +1,24 @@
 import { AiOutlineCrown } from "react-icons/ai";
 import './style.css';
+import { useAuth } from "../../hooks/useAuth";
 
-interface ConnectedUserProps{
-    user: ConnectedUserProps
-    isLeader: boolean
-}
-
-interface ConnectedUser {
+interface ConnectedUserProps {
     connected: boolean;
     user: WorkspaceUser;
-    isLeader: boolean
+    isLeader: boolean;
+
+    createDirectMessage: (receivingUserId: string) => void;
 }
 
 interface WorkspaceUser {
     username: string;
-    userId: number;
+    id: string;
     
 }
 
-const ConnectedUserComponent =  ({connected, user, isLeader} : ConnectedUser) => {
+const ConnectedUserComponent =  ({connected, user, isLeader, createDirectMessage} : ConnectedUserProps) => {   
     return (
-        <div className='connected-users-container'>
+        <div onClick={ () => { createDirectMessage(user.id) } } className='connected-users-container'>
             <div className='user-icon-container'>
                 <div className='user-icon'>
                 </div>

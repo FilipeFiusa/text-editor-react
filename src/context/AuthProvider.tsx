@@ -11,7 +11,7 @@ interface IAuthContext {
   }
 
 interface Auth {
-    userId: number;
+    userId: string;
     userName: string;
     token: string;
 }

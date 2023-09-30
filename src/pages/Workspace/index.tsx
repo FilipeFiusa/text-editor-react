@@ -12,6 +12,8 @@ import SocketConnection from '../../model/SocketConnection';
 import Workspace from '../../model/Workpace';
 import './style.css';
 import SocialContainer from '../../components/SocialContainer';
+import DirectChat from '../../model/DirectChat';
+import Message from '../../model/Message';
 
 function WorkspacePage(){
     const [modalActive, setModalActive] = useState(0);
@@ -30,8 +32,13 @@ function WorkspacePage(){
 
     const [userWorkspaces, setUserWorkspaces] = useState<Workspace[]>([]);
 
+    const [newChatId, setNewChatId] = useState("");
+
+    const [directChats, setDirectChats] = useState<DirectChat[]>([]);
+    const [currentChat, setCurrentChat] = useState<DirectChat>();
+
     const { auth } = useAuth();
-    const { workspacesConnections, setIsConnected, setMainConnection, setWorkspacesConnections } = useSocket();
+    const { workspacesConnections, mainConnection, setIsConnected, setMainConnection, setWorkspacesConnections } = useSocket();
 
     let tempWorkspace: SocketConnection[] = [];
 
@@ -108,8 +115,9 @@ function WorkspacePage(){
         }
     }
 
-    const timeout = (delay: number) => {
-        return new Promise( res => setTimeout(res, delay) );
+    const goToDirectChat = (roomName: string) => {
+        setNewChatId(roomName);
+        setContainerType("SocialContainer")
     }
 
     useEffect(() => {
@@ -188,24 +196,130 @@ function WorkspacePage(){
                 
         })
 
+        connection.on("user-direct-messages", (_directChats: DirectChat[]) => {
+            console.log("starting direct chat")
+
+            console.log(_directChats)
+
+            if(!_directChats){
+                return
+            }
+
+            setDirectChats(_directChats)
+        })
+
+        connection.on("new-user-direct-messages", (_directChats: DirectChat) => {
+            if(!_directChats){
+                return
+            }
+
+            setDirectChats([
+                ...directChats,
+                 _directChats
+            ])
+        })
+        
+        connection.on("user-connected", (chatId: string, connectUserId: string) => {
+            setDirectChats(currentDirectChat => currentDirectChat.map((chat) => {
+                if(chat.id === chatId){
+                    return {
+                        ...chat,
+                        users: chat.users.map((user) => {
+                            if(user.id === connectUserId){
+                                return {
+                                    ...user,
+                                    status: 1
+                                }
+                            }
+
+                            return user
+                        })
+                    }
+                }
+                
+                return chat;
+            })); 
+        })
+
+        connection.on("user-disconnected", (chatId: string, connectUserId: string) => {
+            setDirectChats(currentDirectChat => currentDirectChat.map((chat) => {
+                if(chat.id === chatId){
+                    return {
+                        ...chat,
+                        users: chat.users.map((user) => {
+                            if(user.id === connectUserId){
+                                return {
+                                    ...user,
+                                    status: 2
+                                }
+                            }
+
+                            return user
+                        })
+                    }
+                }
+                
+                return chat;
+            })); 
+        })
+
+        connection.on("new-direct-message", (chatId: string, newMessage: Message) => {
+            setDirectChats(currentDirectChat => currentDirectChat.map((chat) => {
+                if(chat.id === chatId){
+                    return {
+                        ...chat,
+                        messages: [...chat.messages, newMessage]
+                    }
+                }
+                
+                return chat;
+            })); 
+
+            console.log(directChats)
+
+            console.log("chat updated +++") 
+            // console.log(currentChat)
+        })
+
         return () => {
             connection.off('connect');
             connection.off('disconnect');
             connection.off('user-workspaces');
             connection.off('new-user-workspace');
+            connection.off("direct-chat-changed");
+            connection.off("new-direct-message");
+            connection.off("new-direct-message");
+            connection.off("user-disconnected");
         };
     }, [])
 
-    // useEffect(() => {
-    //     console.log("updated");
-    //     console.log(workspacesConnections.length);
-        
-    //     addListenersToConnections();
-        
-    //     return () => {
-    //         addListenersToConnections();
-    //     }
-    // }, [workspacesConnections])
+    useEffect(() => {
+        if(!mainConnection) {
+            return
+        }
+
+        mainConnection.on("new-current-direct-message", (chatId: string, newMessage: Message) => {
+            console.log("new message")
+            console.log(currentChat)
+
+            if(currentChat && currentChat.id == chatId){
+                setCurrentChat({
+                    ...currentChat,
+                    messages: [...currentChat.messages, newMessage]
+                })
+            }
+
+            console.log("chat updated +++") 
+            console.log(currentChat)
+        })
+
+
+
+        return () => {
+            mainConnection.off("new-current-direct-message")
+        }
+    }, [currentChat])
+
 
     return( 
         <div id="main-page">
@@ -222,7 +336,9 @@ function WorkspacePage(){
                 <MenuItem itemType={3} onClick={newWorkspaceOnClick}/>
             </div>
 
-            { containerType === "SocialContainer" ? <SocialContainer /> : <WorkspaceContainer currentFolder={currentFolder} setCurrentFolder={setCurrentFolder} workspaceConnection={currentWorkspace} />}
+            { containerType === "SocialContainer" 
+                ? <SocialContainer mainConnection={mainConnection} directChats={directChats} currentChat={ currentChat } setCurrentChat={setCurrentChat} /> 
+                : <WorkspaceContainer currentFolder={currentFolder} setCurrentFolder={setCurrentFolder} workspaceConnection={currentWorkspace} goToDirectChat={goToDirectChat}  />}
 
             {/* <div id="content-container">
                 <SocialContainer />
