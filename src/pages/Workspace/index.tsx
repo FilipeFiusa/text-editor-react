@@ -160,6 +160,11 @@ function WorkspacePage(){
             setIsConnected(false);
         });
 
+        connection.prependAny((eventName, ...args) => {
+            console.log("prepend")
+            console.log(eventName)
+        });
+
         connection.on('user-workspaces', userWorkspaces => {
             setUserWorkspaces(userWorkspaces);
 
@@ -212,11 +217,11 @@ function WorkspacePage(){
             if(!_directChats){
                 return
             }
-
-            setDirectChats([
-                ...directChats,
-                 _directChats
-            ])
+            
+            console.log("------------------------")
+            console.log(_directChats)
+            
+            setDirectChats(current => [...current, _directChats])
         })
         
         connection.on("user-connected", (chatId: string, connectUserId: string) => {
@@ -288,7 +293,6 @@ function WorkspacePage(){
             connection.off('new-user-workspace');
             connection.off("direct-chat-changed");
             connection.off("new-direct-message");
-            connection.off("new-direct-message");
             connection.off("user-disconnected");
         };
     }, [])
@@ -320,6 +324,10 @@ function WorkspacePage(){
         }
     }, [currentChat])
 
+    useEffect(() => {
+        console.log("----------")
+        console.log(directChats)
+    }, [directChats])
 
     return( 
         <div id="main-page">

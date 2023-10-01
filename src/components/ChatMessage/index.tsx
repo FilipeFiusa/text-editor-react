@@ -12,7 +12,7 @@ const ChatMessage =  ({message} : ChatMessageProps) => {
                 <div className='chat-icon'></div>
             </div>
             <div className='chat-content-container'>
-                <h4>{message.userName}</h4>
+                <h4>{message.user.username}</h4>
                 <p>{message.content}</p>
             </div>
         </div>
