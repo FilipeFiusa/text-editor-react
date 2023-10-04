@@ -70,7 +70,7 @@ function WorkspaceContainer ( {workspaceConnection, currentFolder, setCurrentFol
     }
   
     const sendMessage = (content: string) => {
-        workspaceConnection?.socket.emit("send-general-message", auth?.userName, content, async (message: Message) => {
+        workspaceConnection?.socket.emit("send-general-message", auth?.userId, content, async (message: Message) => {
             setMessages([...messages, message]);
         });
     }

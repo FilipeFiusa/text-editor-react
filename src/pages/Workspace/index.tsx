@@ -217,10 +217,7 @@ function WorkspacePage(){
             if(!_directChats){
                 return
             }
-            
-            console.log("------------------------")
-            console.log(_directChats)
-            
+
             setDirectChats(current => [...current, _directChats])
         })
         
@@ -324,10 +321,6 @@ function WorkspacePage(){
         }
     }, [currentChat])
 
-    useEffect(() => {
-        console.log("----------")
-        console.log(directChats)
-    }, [directChats])
 
     return( 
         <div id="main-page">

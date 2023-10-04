@@ -7,6 +7,7 @@ import DirectChat from '../../model/DirectChat';
 import { useAuth } from '../../hooks/useAuth';
 import DirectChatItem from '../DirectChatItem';
 import { Socket } from 'socket.io-client';
+import UsersIcon from '../../icons/users.svg';
 
 interface SocialContainerProps {
     mainConnection?: Socket 
@@ -72,7 +73,6 @@ function SocialContainer ({mainConnection, directChats, currentChat, setCurrentC
                         { directChats && auth ? directChats.map((chat) => {
                             return <DirectChatItem key={chat.id} userId={auth?.userId} directChat={chat} userClicked={userClicked} />
                         }) : "" }
-
                     </div>
 
                     <div className="user-profile">
