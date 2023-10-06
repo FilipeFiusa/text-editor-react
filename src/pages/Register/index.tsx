@@ -70,50 +70,76 @@ function Register(props: any){
                 <p className={passwordMatch ? "hide" : "warning"}>Password dont match</p>
                 <p className={emailAlreadyExists? "warning": "hide"}>Email already exists</p>
 
-                <input 
-                    type="text"
-                    name="login" 
-                    value={login} 
-                    autoComplete="off"
-                    required
-                    onChange={event => setLogin(event.target.value)} 
-                    placeholder="Login" 
-                />
-                
-                <input 
-                    id="email"          
-                    autoComplete="off"
-                    required
-                    className={emailValid ? "" : "invalid"}
-                    onChange={event => setEmail(event.target.value)} 
-                    placeholder="Email"
-                />
 
-                <input 
-                    type={"password"} 
-                    name="password" 
-                    value={password} 
-                    autoComplete="off"
-                    required
-                    className={passwordMatch ? "" : "invalid"}
-                    onChange={event => setPassword(event.target.value)} 
-                    placeholder="Password"
-                />
+                <div className="input-div">
+                    <label htmlFor="login">
+                        Login:
+                    </label>
+                    <input 
+                        type="text"
+                        id="login" 
+                        value={login} 
+                        autoComplete="off"
+                        required
+                        onChange={event => setLogin(event.target.value)} 
+                        placeholder="Login" 
+                    />
+                </div>
 
-                <input 
-                    type={"password"} 
-                    name="confirm-password" 
-                    value={confirmPassword} 
-                    autoComplete="off"
-                    required
-                    className={passwordMatch ? "" : "invalid"}
-                    onChange={event => setConfirmPassword(event.target.value)} 
-                    placeholder="Confirm Password"
-                />
+                <div className="input-div">
+                    <label htmlFor="email">
+                        Email:
+                    </label>
+                    <input 
+                        id="email"          
+                        autoComplete="off"
+                        required
+                        className={emailValid ? "" : "invalid"}
+                        onChange={event => setEmail(event.target.value)} 
+                        placeholder=""
+                    />
+                </div>
 
-                <input type="submit" value="Sign in" />
+                <div className="input-div">
+                    <label htmlFor="password">
+                        Password:
+                    </label>
+                    <input 
+                        type={"password"} 
+                        id="password" 
+                        value={password} 
+                        autoComplete="off"
+                        required
+                        className={passwordMatch ? "" : "invalid"}
+                        onChange={event => setPassword(event.target.value)} 
+                        placeholder=""
+                    />
+                </div>
 
-                <h4>Already have an account? <Link to="/login">Sign in</Link></h4>
+                <div className="input-div">
+                    <label htmlFor="confirm-password">
+                        Confirm Password:
+                    </label>
+                    
+                    <input 
+                        type={"password"} 
+                        id="confirm-password" 
+                        value={confirmPassword} 
+                        autoComplete="off"
+                        required
+                        className={passwordMatch ? "" : "invalid"}
+                        onChange={event => setConfirmPassword(event.target.value)} 
+                        placeholder=""
+                    />
+                </div>
+
+
+
+
+
+                <input className="submit-button" type="submit" value="Register" />
+
+                <h4><Link to="/login">Already have an account? </Link></h4>
             </form>
         </div>
 

@@ -11,8 +11,7 @@
 #register-form {
     background-color: #E3E3E3;
 
-    width: 600px;
-    height: 600px;
+    padding: 60px 70px;
 
 
     display: flex;
@@ -30,11 +29,29 @@
     display: none;
 }
 
-#register-form input {
+#register-form h2 {
+    padding-bottom: 20px;
+}
+
+#register-form .input-div{
+    display: flex;
+    flex-direction: column;
+}
+
+#register-form .input-div input {
     width: 300px;
-    height: 30px;
-    border: 2px solid;
+    height: 20px;
+
     padding: 20px 0;
+    margin: 10px 0;
+}
+
+#register-form .submit-button {
+    width: 300px;
+    padding: 20px 0;
+
+    margin-top: 20px;
+    margin-bottom: 5px;
 }
 
 .invalid {

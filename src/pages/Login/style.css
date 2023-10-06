@@ -11,7 +11,7 @@
 #login-form {
     background-color: #E3E3E3;
 
-    padding: 90px 80px;
+    padding: 60px 70px;
 
 
     display: flex;
@@ -19,11 +19,15 @@
 
 }
 
+#login-form h2 {
+    padding-bottom: 20px;
+}
+
 #warning{
     color: red;
 }
 
-.input-div{
+#login-form .input-div{
     display: flex;
     flex-direction: column;
 }

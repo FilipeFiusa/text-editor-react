@@ -63,17 +63,17 @@ function Login(){
                     <label htmlFor="login">
                         Login:
                     </label>
-                    <input id="login" value={login} onChange={event => setLogin(event.target.value)} placeholder="" />
+                    <input id="login" value={login} onChange={event => setLogin(event.target.value)} placeholder="" required />
                 </div>
                 <div className="input-div">
                     <label htmlFor="password">Password:</label>
-                    <input type="password" id="password" value={password} onChange={event => setPassword(event.target.value)} placeholder=""/>
+                    <input type="password" id="password" value={password} onChange={event => setPassword(event.target.value)} placeholder="" required/>
                 </div>
                 
 
                 <input className="submit-button" type="submit" value="Sign in" />
 
-                <h4>Still dont have an account? <Link to="/register">Sign up</Link></h4>
+                <h4>Still dont have an account? <Link to="/register">Register</Link></h4>
             </form>
         </div>
     )
