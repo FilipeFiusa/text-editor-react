@@ -9,7 +9,13 @@ import ConnectedUserComponent from "../ConnectedUserComponent";
 import MenuFileList from '../MenuFileList';
 import FileIcon from "../../icons/file.svg";
 import UsersIcon from '../../icons/users.svg';
+import AceEditor from "react-ace";
 import './style.css';
+import Select from 'react-select'
+
+import "ace-builds/src-noconflict/mode-javascript";
+import "ace-builds/src-noconflict/theme-xcode";
+import "ace-builds/src-noconflict/ext-language_tools";
 
 let socket = io();
 
@@ -52,11 +58,52 @@ function WorkspaceContainer ( {workspaceConnection, currentFolder, setCurrentFol
 
     const [ currentContentActive, setCurrentContentActive ] = useState(2); // 0- friend list, 1- textArea, 2- chat component
 
+    const [ textAreaValue, setTextAreaValue ] = useState("");
+
+    const themes = [
+        "monokai",
+        "github",
+        "tomorrow",
+        "kuroir",
+        "twilight",
+        "xcode",
+        "textmate",
+        "solarized_dark",
+        "solarized_light",
+        "terminal"
+    ];
+    const themeOptions: {value : string, label: string}[] = []
+    themes.forEach(theme => {
+        require(`ace-builds/src-noconflict/theme-${theme}`)
+        themeOptions.push({ value: theme, label: theme.charAt(0).toUpperCase() + theme.slice(1) })
+    });
+
     const currentContent = (c: number) => {
         if(currentContentActive == 0) {
             return <></>
         }else if(currentContentActive == 1){
-            return <textarea id="page-content" onInput={onTextAreaInput} />
+            return <AceEditor
+                        mode="javascript"
+                        theme="xcode"
+                        // onChange={onChange}
+                        name="UNIQUE_ID_OF_DIV"
+                        editorProps={{ $blockScrolling: true }}
+                        fontSize={14}
+                        width="100%"
+                        height="100%"
+                        showPrintMargin={false}
+                        showGutter={true}
+                        highlightActiveLine={true}
+                        onChange={onTextAreaInput}
+                        value={textAreaValue}
+                        setOptions={{
+                            enableBasicAutocompletion: true,
+                            enableLiveAutocompletion: true,
+                            enableSnippets: true,
+                            showLineNumbers: true,
+                            tabSize: 2,
+                        }}
+                    />
         }else if(currentContentActive == 2){
             return <ChatComponent messages={messages} sendMessage={sendMessage}/>
         }
@@ -76,18 +123,9 @@ function WorkspaceContainer ( {workspaceConnection, currentFolder, setCurrentFol
     }
 
     useEffect(() => {
-        const textarea = (document.getElementById("page-content") as HTMLInputElement);
-
         setWorkspaceFolder(workspaceConnection?.workspace.workspaceFolder);
 
         setCurrentFileName("");
-
-        if(textarea)
-            textarea.value = "";
-
-        
-        // workspaceConnection?.socket.emit("auth", auth?.userId, () => {
-        //     console.log("authing")
             
         workspaceConnection?.socket.emit("get-users", (currentConnectedUsers: ConnectedUser[]) => {
             setConnectedUsers(currentConnectedUsers); 
@@ -95,13 +133,11 @@ function WorkspaceContainer ( {workspaceConnection, currentFolder, setCurrentFol
         })
 
         workspaceConnection?.socket.on("room-changed", content => {
-            const textarea = (document.getElementById("page-content") as HTMLInputElement);
-            textarea.value = content;
+            setTextAreaValue(content)
         })
     
         workspaceConnection?.socket.on("receive-text-changed", (text) =>{
-            const textarea = (document.getElementById("page-content") as HTMLInputElement);
-            textarea.value = text;
+            setTextAreaValue(text)
         })
 
         workspaceConnection?.socket.emit('get-messages', (chatMessages: any) => {
@@ -159,9 +195,10 @@ function WorkspaceContainer ( {workspaceConnection, currentFolder, setCurrentFol
         setCurrentFileName(roomName.replace("//", ""))
     }
 
-    const onTextAreaInput = () => {
-        const textarea = (document.getElementById("page-content") as HTMLInputElement);
-        workspaceConnection?.socket.emit("text-changed", textarea.value);
+    const onTextAreaInput = (e: any) => {
+        setTextAreaValue(e.value)
+
+        workspaceConnection?.socket.emit("text-changed", e);
     }
 
     const addFolder = (newFolderName: string, folder: string) => {
@@ -245,6 +282,11 @@ function WorkspaceContainer ( {workspaceConnection, currentFolder, setCurrentFol
                 </div>
 
                 <div id="page-container">
+                    <div className="ace-options">
+                        <Select className="options-select" isSearchable={false} options={themeOptions} />
+                        <Select className="options-select" isSearchable={false} options={themeOptions} />
+                    </div>
+
                     {currentContent(currentContentActive)}
                 </div>
 
