@@ -29,7 +29,7 @@ const ChooseWorkspaceOptionModal = ({isOpen, setIsOpen, changeModal}: Props) => 
             onRequestClose={closeModal}
             style={customStyles}
             ariaHideApp={false}
-            contentLabel="Example Modal">
+            contentLabel="Choose Workspace Modal">
             <div className='choose-modal-option'>
                 <h2>Create or Join Workspace ?</h2>
                 <form>

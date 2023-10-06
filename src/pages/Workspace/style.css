@@ -47,13 +47,3 @@ hr{
 .hidden {
     display: none;
 }
-
-.create-workspace {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.create-workspace h2{
-    padding-bottom: 20px;
-}

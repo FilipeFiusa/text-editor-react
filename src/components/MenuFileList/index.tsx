@@ -19,9 +19,11 @@ interface MenuFileListProps {
     addFolder(newFolderName: string, folder: string): any;
     addFile(fileName: string, folder: string): any;
     renameFolder(newFolderName: string, folder: string): any;
-    deleteFolder(folder: string): any
+    deleteFolder(folder: string): any;
     renameFile(parentId: string, newFilerName: string, fileId: string): any;
-    deleteFile(parentId: string, fileId: string): any
+    deleteFile(parentId: string, fileId: string): any;
+
+    isLanguage: (language: string) => boolean;
 }
 
 function MenuFileList({
@@ -33,7 +35,8 @@ function MenuFileList({
     renameFolder,
     deleteFolder,
     renameFile,
-    deleteFile
+    deleteFile,
+    isLanguage
 }: MenuFileListProps){
     const [menuListModalActive, setMenuListModalActive] = useState(false);
     const [modalText, setModalText] = useState("");
@@ -109,7 +112,7 @@ function MenuFileList({
         )
     }
 
-    function checkFolderClicked(folder: Folder){
+    const checkFolderClicked = (folder: Folder) => {
         //console.log(folder)
 
         const test = document.getElementById(folder.fullPath == "" ? "/" : folder.fullPath );
@@ -123,6 +126,35 @@ function MenuFileList({
             test?.classList.remove("close");
         }
     }
+    
+    const folderAlreadyExists = (folderName: string) => {
+        if(!workspaceFolder || workspaceFolder.subFolders.length === 0){
+            return false;
+        }
+
+        for(let folder of workspaceFolder?.subFolders){
+            if(folder.folderName === folderName){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    const fileAlreadyExists = (fileName: string) => {
+        if(!workspaceFolder || workspaceFolder.files.length === 0){
+            return false;
+        }
+
+        for(let file of workspaceFolder.files){
+            if(file.fileName === fileName){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 
     const folderContextMenu = (e: React.MouseEvent<HTMLLIElement, MouseEvent>, clickedFolder: Folder ) => {
         e.preventDefault();
@@ -225,6 +257,9 @@ function MenuFileList({
             </ul>  
 
             <MenuListModal 
+                isLanguage={isLanguage} 
+                folderAlreadyExists={folderAlreadyExists} 
+                fileAlreadyExists={fileAlreadyExists} 
                 isOpen={menuListModalActive} 
                 setIsOpen={setMenuListModalActive} 
                 modalText={modalText} 

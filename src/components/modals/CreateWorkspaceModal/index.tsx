@@ -38,7 +38,7 @@ const CreateWorkspaceModal = ({isOpen, setIsOpen, changeModal}: Props) => {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        const extension = selectedFile?.name.split(".")[1]
+        const extension = selectedFile?.name.split(".")[selectedFile?.name.split(".").length - 1]
 
         mainConnection?.emit("create-workspace", auth?.userId, workspaceName, selectedFile, extension, (status: boolean) => {
             if(!status){
@@ -78,15 +78,18 @@ const CreateWorkspaceModal = ({isOpen, setIsOpen, changeModal}: Props) => {
             onRequestClose={closeModal}
             style={customStyles}
             ariaHideApp={false}
-            contentLabel="Example Modal">
+            contentLabel="Create Workspace Modal">
             <div className='create-workspace'>
                 <h2>Create Your Workspace</h2>
                 <form onSubmit={handleSubmit}>
                     <div className='upload-container'>
                         <div className={selectedFile ? "image" : "image placeholder"}>
-                            <img src={selectedFile ? preview : PlusIcon} alt="" />
+                            <label htmlFor="file">
+                                <img src={selectedFile ? preview : PlusIcon} alt="" />
+                            </label>
                             <input         
                                 type="file" 
+                                id="file"
                                 multiple={false}
                                 accept="image/*"
                                 required
@@ -95,6 +98,7 @@ const CreateWorkspaceModal = ({isOpen, setIsOpen, changeModal}: Props) => {
                     </div>
                     
                     <input 
+                        className='new-workspace-input'
                         type="text" 
                         required 
                         placeholder='Type the name of your new workspace'

@@ -1,6 +1,14 @@
+.choose-modal-option {
+    padding: 15px 15px;
+    padding-bottom: 0px;
+    
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
 
-
-form{
+.choose-modal-option form{
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -14,6 +22,7 @@ form{
 }
 
 .workspace-options input {
+    margin: 15px 0;
     padding: 10px 0;
 
     width: 350px

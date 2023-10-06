@@ -1,4 +1,12 @@
+.join-workspace {
+    padding: 15px 15px;
+    padding-bottom: 0px;
 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
 
 form{
     display: flex;
@@ -6,59 +14,11 @@ form{
     align-items: center;
 }
 
-.upload-container{
-    display: flex;
-    justify-content: center;
+.join-workspace input {
+    margin: 10px 0;
+    padding: 15px 5px;
 
-    padding: 0 150px;
-}
-
-.upload-container input {
-    position:fixed;
-    opacity: 0;
-    width: 100px;
-    height: 100px;
-}
-
-.image {
-    width: 100px;
-    height: 100px;
-    
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.image img {
-    width: 100px;
-    height: 100px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    border-radius: 50%;
-    padding-left: 3px;
-}
-
-.placeholder {
-    width: 100px;
-    height: 100px;
-
-    border: 1px solid black;
-}
-
-.placeholder img {
-    width: 50px;
-    height: 50px;
-    padding-left: 3px;
-}
-
-.create-workspace input {
-    padding: 30px 0;
-
-    width: 350px
+    width: 350px;
 }
 
 .buttons-container {
@@ -77,4 +37,5 @@ form{
     padding: 0px;
 
     width: 100px;
+    height: 30px;
 }

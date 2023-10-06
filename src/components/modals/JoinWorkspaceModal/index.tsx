@@ -53,7 +53,7 @@ const JoinWorkspaceModal = ({isOpen, setIsOpen, changeModal}: Props) => {
             onRequestClose={closeModal}
             style={customStyles}
             ariaHideApp={false}
-            contentLabel="Example Modal">
+            contentLabel="Join Workspace Modal">
             <div className='join-workspace'>
                 <h2>Join a Workspace</h2>
                 <p className='warning'>{ warningText }</p>

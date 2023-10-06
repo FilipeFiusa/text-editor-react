@@ -6,60 +6,11 @@ form{
     align-items: center;
 }
 
-.upload-container{
-    display: flex;
-    justify-content: center;
-
-    padding: 0 150px;
-}
-
-.upload-container input {
-    position:fixed;
-    opacity: 0;
-    width: 100px;
-    height: 100px;
-}
-
-.image {
-    width: 100px;
-    height: 100px;
-    
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.image img {
-    width: 100px;
-    height: 100px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    border-radius: 50%;
-    padding-left: 3px;
-}
-
-.placeholder {
-    width: 100px;
-    height: 100px;
-
-    border: 1px solid black;
-}
-
-.placeholder img {
-    width: 50px;
-    height: 50px;
-    padding-left: 3px;
-}
-
-.create-workspace input {
+/* .create-workspace input {
     padding: 30px 0;
 
     width: 350px
-}
+} */
 
 .buttons-container {
     padding: 10px;

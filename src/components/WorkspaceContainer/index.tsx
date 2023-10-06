@@ -11,11 +11,33 @@ import FileIcon from "../../icons/file.svg";
 import UsersIcon from '../../icons/users.svg';
 import AceEditor from "react-ace";
 import './style.css';
-import Select from 'react-select'
-
-import "ace-builds/src-noconflict/mode-javascript";
 import "ace-builds/src-noconflict/theme-xcode";
 import "ace-builds/src-noconflict/ext-language_tools";
+
+const supportedLanguages = [
+    {name: "javascript", extension: "js"},
+    {name: "java", extension: "java"},
+    {name: "python", extension: "py"},
+    {name: "xml", extension: "xml"},
+    {name: "ruby", extension: "rb"},
+    {name: "sass", extension: "sass"},
+    {name: "markdown", extension: "markdown"},
+    {name: "mysql", extension: "sql"},
+    {name: "json", extension: "json"},
+    {name: "html", extension: "html"},
+    {name: "golang", extension: "go"},
+    {name: "csharp", extension: "cs"},
+    {name: "elixir", extension: "ex"},
+    {name: "typescript", extension: "ts"},
+    {name: "css", extension: "css"}
+];
+
+supportedLanguages.forEach(lang => {
+    require(`ace-builds/src-noconflict/mode-${lang.name}`);
+    require(`ace-builds/src-noconflict/snippets/${lang.name}`);
+});
+  
+
 
 let socket = io();
 
@@ -51,6 +73,7 @@ function WorkspaceContainer ( {workspaceConnection, currentFolder, setCurrentFol
     const [connectedUsers, setConnectedUsers] = useState<ConnectedUser[]>([]);
 
     const [ currentFileName, setCurrentFileName ] = useState("");
+    const [ currentLanguage, setCurrentLanguage ] = useState("java");
 
     const [messages, setMessages] = useState<Message[]>([])
 
@@ -83,7 +106,7 @@ function WorkspaceContainer ( {workspaceConnection, currentFolder, setCurrentFol
             return <></>
         }else if(currentContentActive == 1){
             return <AceEditor
-                        mode="javascript"
+                        mode={currentLanguage}
                         theme="xcode"
                         // onChange={onChange}
                         name="UNIQUE_ID_OF_DIV"
@@ -132,7 +155,17 @@ function WorkspaceContainer ( {workspaceConnection, currentFolder, setCurrentFol
             console.log(currentConnectedUsers)
         })
 
-        workspaceConnection?.socket.on("room-changed", content => {
+        workspaceConnection?.socket.on("room-changed", (content: string, roomName: string) => {
+            if(roomName.split(".").length >= 2 && roomName.split(".")[roomName.split(".").length - 1] != ""){
+                for(let language of supportedLanguages){
+                    if(language.extension === roomName.split(".")[roomName.split(".").length - 1]){
+                        setCurrentLanguage(language.name);
+                    }
+                }
+            }else{
+                setCurrentLanguage("");
+            }
+            
             setTextAreaValue(content)
         })
     
@@ -236,6 +269,19 @@ function WorkspaceContainer ( {workspaceConnection, currentFolder, setCurrentFol
 
         workspaceConnection?.socket.emit("start-direct-chat", receivingUserId);
     }
+
+    const isLanguage = (language: string) => {
+        for(let l of supportedLanguages){
+            console.log(l)
+            console.log(language)
+            if(l.extension === language){
+                console.log("true")
+                return true;
+            }
+        }
+
+        return false;
+    }
     
     return(
         <div id='workspace-container'>
@@ -271,6 +317,8 @@ function WorkspaceContainer ( {workspaceConnection, currentFolder, setCurrentFol
                             } 
                             changeSocketRoom={changeSocketRoom} 
                             
+                            isLanguage={isLanguage}
+
                             addFolder={addFolder}
                             addFile={addFile}
                             renameFolder={renameFolder}
