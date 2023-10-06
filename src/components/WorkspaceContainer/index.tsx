@@ -282,11 +282,6 @@ function WorkspaceContainer ( {workspaceConnection, currentFolder, setCurrentFol
                 </div>
 
                 <div id="page-container">
-                    <div className="ace-options">
-                        <Select className="options-select" isSearchable={false} options={themeOptions} />
-                        <Select className="options-select" isSearchable={false} options={themeOptions} />
-                    </div>
-
                     {currentContent(currentContentActive)}
                 </div>
 
