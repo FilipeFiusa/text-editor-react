@@ -59,12 +59,19 @@ function Login(){
                 <h2>Login</h2>
 
                 <p id="warning"></p>
-
-                <input name="login" value={login} onChange={event => setLogin(event.target.value)} placeholder="Login" />
+                <div className="input-div">
+                    <label htmlFor="login">
+                        Login:
+                    </label>
+                    <input name="login" value={login} onChange={event => setLogin(event.target.value)} placeholder="" />
+                </div>
+                <div className="input-div">
+                    <label htmlFor="password">Password:</label>
+                    <input type="password" name="password" value={password} onChange={event => setPassword(event.target.value)} placeholder=""/>
+                </div>
                 
-                <input type="password" name="password" value={password} onChange={event => setPassword(event.target.value)} placeholder="Password"/>
 
-                <input type="submit" value="Sign in" />
+                <input className="submit-button" type="submit" value="Sign in" />
 
                 <h4>Still dont have an account? <Link to="/register">Sign up</Link></h4>
             </form>
