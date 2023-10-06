@@ -24,6 +24,7 @@ interface MenuFileListProps {
     deleteFile(parentId: string, fileId: string): any;
 
     isLanguage: (language: string) => boolean;
+    supportedLanguages: {name: string, extension: string}[];
 }
 
 function MenuFileList({
@@ -36,7 +37,8 @@ function MenuFileList({
     deleteFolder,
     renameFile,
     deleteFile,
-    isLanguage
+    isLanguage,
+    supportedLanguages,
 }: MenuFileListProps){
     const [menuListModalActive, setMenuListModalActive] = useState(false);
     const [modalText, setModalText] = useState("");
@@ -50,7 +52,17 @@ function MenuFileList({
     const [folderPoints, setFolderPoints] = useState({ x: 0, y: 0 })
     const [filePoints, setFilePoints] = useState({ x: 0, y: 0 })
 
-    
+    const loadFileIcon = (fileName: string) => {
+        for(let l of supportedLanguages){
+            if(fileName.split(".").length >= 2 && fileName.split(".")[fileName.split(".").length - 1] === l.extension){
+                const iconPath = "http://localhost:3333/public/language-icons/" + l.name + ".svg";
+
+                return <img src={iconPath} alt="" />
+            }
+        }
+
+        return <img src={ FileIcon} alt="" />
+    }
 
     useEffect(() => {
         const handleClick = () => {
@@ -82,7 +94,8 @@ function MenuFileList({
                             <li key={file.fileName} 
                                 onClick={() => changeSocketRoom(folder.fullPath + "/" + file.fileName)}
                                 onContextMenu={ (e) => fileContextMenu(e, file)}>
-                            <img src={FileIcon} alt="" />
+                                { loadFileIcon(file.fileName) }
+
                             {file.fileName}</li>
                         )}): ""}
                 </ul>    
@@ -257,6 +270,7 @@ function MenuFileList({
             </ul>  
 
             <MenuListModal 
+                supportedLanguages={supportedLanguages}
                 isLanguage={isLanguage} 
                 folderAlreadyExists={folderAlreadyExists} 
                 fileAlreadyExists={fileAlreadyExists} 

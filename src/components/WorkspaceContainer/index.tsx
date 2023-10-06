@@ -317,6 +317,7 @@ function WorkspaceContainer ( {workspaceConnection, currentFolder, setCurrentFol
                             } 
                             changeSocketRoom={changeSocketRoom} 
                             
+                            supportedLanguages={supportedLanguages}
                             isLanguage={isLanguage}
 
                             addFolder={addFolder}
