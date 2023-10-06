@@ -63,11 +63,11 @@ function Login(){
                     <label htmlFor="login">
                         Login:
                     </label>
-                    <input name="login" value={login} onChange={event => setLogin(event.target.value)} placeholder="" />
+                    <input id="login" value={login} onChange={event => setLogin(event.target.value)} placeholder="" />
                 </div>
                 <div className="input-div">
                     <label htmlFor="password">Password:</label>
-                    <input type="password" name="password" value={password} onChange={event => setPassword(event.target.value)} placeholder=""/>
+                    <input type="password" id="password" value={password} onChange={event => setPassword(event.target.value)} placeholder=""/>
                 </div>
                 
 
